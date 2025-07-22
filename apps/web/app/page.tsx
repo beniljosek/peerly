@@ -10,6 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Search, MessageCircle, Calendar, Star, BookOpen, Zap, CircleDollarSign } from "lucide-react"
 import { QuickConnectModal } from "./components/quick-connect-modal"
 import { TopicModal } from "./components/topic-modal"
+import { BookingModal } from "./components/booking-modal"
+import { useSuperCoins } from "@/contexts/supercoin-context"
 
 // Mock data for topics
 const mockTopics = [
@@ -112,7 +114,10 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [showQuickConnect, setShowQuickConnect] = useState(false)
   const [showTopicModal, setShowTopicModal] = useState(false)
+  const [showBookingModal, setShowBookingModal] = useState(false)
+  const [selectedTopic, setSelectedTopic] = useState<any>(null)
   const router = useRouter()
+  const { balance } = useSuperCoins()
 
   const filteredTopics = mockTopics.filter((topic) => {
     const matchesSearch =
@@ -131,6 +136,19 @@ export default function HomePage() {
     })
     
     router.push(`/messages?${params.toString()}`)
+  }
+
+  const handleBookClick = (topic: any) => {
+    setSelectedTopic(topic)
+    setShowBookingModal(true)
+  }
+
+  const handleBookingSuccess = (bookingDetails: any) => {
+    // You can add additional logic here, such as:
+    // - Redirecting to a booking confirmation page
+    // - Updating the UI to show the booked session
+    // - Sending notifications
+    console.log('Booking successful:', bookingDetails)
   }
 
   return (
@@ -281,7 +299,13 @@ export default function HomePage() {
                         <MessageCircle className="h-4 w-4 mr-1" />
                         Chat
                       </Button>
-                      <Button size="sm">
+                      <Button 
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleBookClick(topic)
+                        }}
+                      >
                         <Calendar className="h-4 w-4 mr-1" />
                         Book
                       </Button>
@@ -299,6 +323,17 @@ export default function HomePage() {
 
       {/* Topic Creation Modal */}
       <TopicModal open={showTopicModal} onOpenChange={setShowTopicModal} />
+
+      {/* Booking Modal */}
+      {selectedTopic && (
+        <BookingModal
+          open={showBookingModal}
+          onOpenChange={setShowBookingModal}
+          topic={selectedTopic}
+          userSupercoinBalance={balance}
+          onBookingSuccess={handleBookingSuccess}
+        />
+      )}
     </div>
   )
 }
