@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { HeaderWrapper } from './components/header-wrapper'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'Peerly - Learn from Peers, Teach your Passion',
+  description: 'Connect with fellow students to share knowledge, learn new skills, and grow together in a collaborative learning environment.',
   generator: 'v0.dev',
 }
 
@@ -14,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <HeaderWrapper />
+        {children}
+      </body>
     </html>
   )
 }

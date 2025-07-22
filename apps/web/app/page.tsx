@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Search, MessageCircle, Calendar, Star, BookOpen, Zap } from "lucide-react"
-import { Header } from "./components/header"
 import { QuickConnectModal } from "./components/quick-connect-modal"
 import { TopicModal } from "./components/topic-modal"
 
@@ -124,8 +123,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <Header onCreateTopic={() => setShowTopicModal(true)} />
-
       {/* Hero Section */}
       <section className="px-4 py-12 text-center">
         <div className="max-w-4xl mx-auto">
