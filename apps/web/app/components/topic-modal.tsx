@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { X } from "lucide-react"
+import { useTopics } from "../contexts/topic-context"
+import { toast } from "sonner"
 
 interface TopicModalProps {
   open: boolean
@@ -18,6 +20,7 @@ interface TopicModalProps {
 }
 
 export function TopicModal({ open, onOpenChange }: TopicModalProps) {
+  const { addTopic } = useTopics()
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -47,8 +50,36 @@ export function TopicModal({ open, onOpenChange }: TopicModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission
-    console.log("Topic created:", formData)
+    
+    // Create the new topic
+    const newTopic = {
+      title: formData.title,
+      description: formData.description,
+      category: formData.category,
+      level: formData.level,
+      price: formData.price,
+      tags: formData.tags,
+      isUserTopic: true, // This is a user's teaching topic
+      students: 0, // New topic starts with 0 students
+    }
+
+    // Add the topic to both browser and user topics
+    addTopic(newTopic)
+    
+    // Show success message
+    toast.success("Topic created successfully! It's now available in both Browser and My Teachings.")
+    
+    // Reset form
+    setFormData({
+      title: "",
+      description: "",
+      category: "",
+      level: "",
+      price: "",
+      tags: [],
+    })
+    
+    // Close modal
     onOpenChange(false)
   }
 
@@ -88,18 +119,18 @@ export function TopicModal({ open, onOpenChange }: TopicModalProps) {
               <Label>Category</Label>
               <Select
                 value={formData.category}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, category: value }))}
+                onValueChange={(value: string) => setFormData((prev) => ({ ...prev, category: value }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="programming">Programming</SelectItem>
-                  <SelectItem value="mathematics">Mathematics</SelectItem>
-                  <SelectItem value="languages">Languages</SelectItem>
-                  <SelectItem value="business">Business</SelectItem>
-                  <SelectItem value="arts">Arts</SelectItem>
-                  <SelectItem value="science">Science</SelectItem>
+                  <SelectItem value="Programming">Programming</SelectItem>
+                  <SelectItem value="Mathematics">Mathematics</SelectItem>
+                  <SelectItem value="Languages">Languages</SelectItem>
+                  <SelectItem value="Business">Business</SelectItem>
+                  <SelectItem value="Arts">Arts</SelectItem>
+                  <SelectItem value="Science">Science</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -108,15 +139,15 @@ export function TopicModal({ open, onOpenChange }: TopicModalProps) {
               <Label>Level</Label>
               <Select
                 value={formData.level}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, level: value }))}
+                onValueChange={(value: string) => setFormData((prev) => ({ ...prev, level: value }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select level" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="beginner">Beginner</SelectItem>
-                  <SelectItem value="intermediate">Intermediate</SelectItem>
-                  <SelectItem value="advanced">Advanced</SelectItem>
+                  <SelectItem value="Beginner">Beginner</SelectItem>
+                  <SelectItem value="Intermediate">Intermediate</SelectItem>
+                  <SelectItem value="Advanced">Advanced</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { HeaderWrapper } from './components/header-wrapper'
 import { Toaster } from 'sonner'
+import { TopicProvider } from './contexts/topic-context'
 
 export const metadata: Metadata = {
   title: 'Peerly - Learn from Peers, Teach your Passion',
@@ -17,9 +18,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <HeaderWrapper />
-        {children}
-        <Toaster />
+        <TopicProvider>
+          <HeaderWrapper />
+          {children}
+          <Toaster />
+        </TopicProvider>
       </body>
     </html>
   )

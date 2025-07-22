@@ -111,9 +111,8 @@ export function Header({ onCreateTopic, supercoinBalance = 250, verifiedTopics =
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="/placeholder.svg?height=32&width=32&text=JD" />
-                    <AvatarFallback>JD</AvatarFallback>
+                  <Avatar className="h-8 w-8 bg-gradient-to-br from-purple-500 to-pink-500">
+                    <AvatarFallback className="text-white font-semibold text-sm">SC</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>

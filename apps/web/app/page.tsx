@@ -10,111 +10,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Search, MessageCircle, Calendar, Star, BookOpen, Zap, CircleDollarSign } from "lucide-react"
 import { QuickConnectModal } from "./components/quick-connect-modal"
 import { TopicModal } from "./components/topic-modal"
-
-// Mock data for topics
-const mockTopics = [
-  {
-    id: 1,
-    title: "Advanced React Hooks & State Management",
-    description: "Master useEffect, useContext, useReducer and custom hooks. Perfect for intermediate developers.",
-    category: "Programming",
-    level: "Intermediate",
-    tutor: {
-      name: "Sarah Chen",
-      avatar: "/placeholder.svg?height=40&width=40&text=SC",
-      rating: 4.9,
-      sessions: 127,
-    },
-    price: "Free",
-    tags: ["React", "JavaScript", "Hooks"],
-  },
-  {
-    id: 2,
-    title: "Calculus I: Limits and Derivatives",
-    description: "Comprehensive coverage of limits, continuity, and differentiation with practical examples.",
-    category: "Mathematics",
-    level: "Beginner",
-    tutor: {
-      name: "Michael Rodriguez",
-      avatar: "/placeholder.svg?height=40&width=40&text=MR",
-      rating: 4.8,
-      sessions: 89,
-    },
-    price: "15 SuperCoins",
-    tags: ["Calculus", "Math", "Derivatives"],
-  },
-  {
-    id: 3,
-    title: "Spanish Conversation Practice",
-    description: "Improve your Spanish speaking skills through interactive conversations and cultural insights.",
-    category: "Languages",
-    level: "Intermediate",
-    tutor: {
-      name: "Isabella Martinez",
-      avatar: "/placeholder.svg?height=40&width=40&text=IM",
-      rating: 5.0,
-      sessions: 203,
-    },
-    price: "12 SuperCoins",
-    tags: ["Spanish", "Conversation", "Culture"],
-  },
-  {
-    id: 4,
-    title: "Digital Marketing Fundamentals",
-    description: "Learn SEO, social media marketing, and content strategy from real-world campaigns.",
-    category: "Business",
-    level: "Beginner",
-    tutor: {
-      name: "Alex Thompson",
-      avatar: "/placeholder.svg?height=40&width=40&text=AT",
-      rating: 4.7,
-      sessions: 156,
-    },
-    price: "20 SuperCoins",
-    tags: ["Marketing", "SEO", "Social Media"],
-  },
-  {
-    id: 5,
-    title: "Data Structures & Algorithms",
-    description: "Master arrays, linked lists, trees, and sorting algorithms with coding practice.",
-    category: "Programming",
-    level: "Advanced",
-    tutor: {
-      name: "David Kim",
-      avatar: "/placeholder.svg?height=40&width=40&text=DK",
-      rating: 4.9,
-      sessions: 234,
-    },
-    price: "25 SuperCoins",
-    tags: ["Algorithms", "Data Structures", "Coding"],
-  },
-  {
-    id: 6,
-    title: "Creative Writing Workshop",
-    description: "Develop your storytelling skills, character development, and narrative techniques.",
-    category: "Arts",
-    level: "Intermediate",
-    tutor: {
-      name: "Emma Wilson",
-      avatar: "/placeholder.svg?height=40&width=40&text=EW",
-      rating: 4.8,
-      sessions: 78,
-    },
-    price: "18 SuperCoins",
-    tags: ["Writing", "Creative", "Storytelling"],
-  },
-]
+import { useTopics } from "./contexts/topic-context"
 
 const categories = ["All", "Programming", "Mathematics", "Languages", "Business", "Arts", "Science"]
 
 export default function HomePage() {
+  const { browserTopics } = useTopics()
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [showQuickConnect, setShowQuickConnect] = useState(false)
   const [showTopicModal, setShowTopicModal] = useState(false)
   const router = useRouter()
 
-  const filteredTopics = mockTopics.filter((topic) => {
+  const filteredTopics = browserTopics.filter((topic) => {
     const matchesSearch =
       topic.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       topic.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -123,7 +31,9 @@ export default function HomePage() {
     return matchesSearch && matchesCategory
   })
 
-  const handleChatClick = (tutor: typeof mockTopics[0]['tutor']) => {
+  const handleChatClick = (tutor: typeof browserTopics[0]['tutor']) => {
+    if (!tutor) return
+    
     const params = new URLSearchParams({
       tutorId: "1", // You might want to add tutor IDs to your mock data
       tutorName: tutor.name,
@@ -166,7 +76,7 @@ export default function HomePage() {
               <div className="text-sm text-gray-600">Active Learners</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-indigo-600">500+</div>
+              <div className="text-2xl font-bold text-indigo-600">{browserTopics.length}+</div>
               <div className="text-sm text-gray-600">Topics Available</div>
             </div>
             <div className="text-center">
@@ -192,7 +102,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Category Filter */}
           <div className="flex flex-wrap gap-2 mb-8">
             {categories.map((category) => (
               <Button
@@ -214,41 +123,33 @@ export default function HomePage() {
                 <CardHeader>
                   <div className="flex justify-between items-start mb-2">
                     <Badge variant="secondary">{topic.category}</Badge>
-                    <Badge
-                      variant={
-                        topic.level === "Beginner"
-                          ? "default"
-                          : topic.level === "Intermediate"
-                            ? "secondary"
-                            : "destructive"
-                      }
-                    >
+                    <Badge variant={topic.level === "Beginner" ? "default" : "secondary"}>
                       {topic.level}
                     </Badge>
                   </div>
                   <CardTitle className="text-lg">{topic.title}</CardTitle>
+                  <p className="text-gray-600 text-sm">{topic.description}</p>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{topic.description}</p>
-
-                  <div className="flex items-center gap-3 mb-4">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={topic.tutor.avatar || "/placeholder.svg"} />
-                      <AvatarFallback>
-                        {topic.tutor.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">{topic.tutor.name}</div>
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        {topic.tutor.rating} • {topic.tutor.sessions} sessions
+                  {topic.tutor && (
+                    <div className="flex items-center gap-2 mb-4">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={topic.tutor.avatar} />
+                        <AvatarFallback>
+                          {topic.tutor.name.split(" ").map((n) => n[0]).join("")}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="font-medium text-sm">{topic.tutor.name}</div>
+                        <div className="flex items-center gap-1 text-sm text-gray-500">
+                          <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                          <span>{topic.tutor.rating}</span>
+                          <span>•</span>
+                          <span>{topic.tutor.sessions} sessions</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
 
                   <div className="flex flex-wrap gap-1 mb-4">
                     {topic.tags.map((tag) => (
@@ -270,21 +171,25 @@ export default function HomePage() {
                       )}
                     </div>
                     <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleChatClick(topic.tutor)
-                        }}
-                      >
-                        <MessageCircle className="h-4 w-4 mr-1" />
-                        Chat
-                      </Button>
-                      <Button size="sm">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        Book
-                      </Button>
+                      {topic.tutor && topic.tutor.name !== "Sarah Chen" && (
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleChatClick(topic.tutor!)
+                          }}
+                        >
+                          <MessageCircle className="h-4 w-4 mr-1" />
+                          Chat
+                        </Button>
+                      )}
+                      {topic.tutor && topic.tutor.name !== "Sarah Chen" && (
+                        <Button size="sm">
+                          <Calendar className="h-4 w-4 mr-1" />
+                          Book
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardContent>
