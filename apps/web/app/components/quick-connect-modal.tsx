@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -47,6 +48,26 @@ const availableTutors = [
 
 export function QuickConnectModal({ open, onOpenChange }: QuickConnectModalProps) {
   const [searchTopic, setSearchTopic] = useState("")
+  const router = useRouter()
+
+  const handleConnect = (tutor: typeof availableTutors[0]) => {
+    // Close the modal
+    onOpenChange(false)
+    
+    // Navigate to messages page with tutor information
+    const params = new URLSearchParams({
+      tutorId: tutor.id.toString(),
+      tutorName: tutor.name,
+      topic: tutor.topic,
+    })
+    
+    router.push(`/messages?${params.toString()}`)
+  }
+
+  const filteredTutors = availableTutors.filter((tutor) =>
+    tutor.name.toLowerCase().includes(searchTopic.toLowerCase()) ||
+    tutor.topic.toLowerCase().includes(searchTopic.toLowerCase())
+  )
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -72,7 +93,7 @@ export function QuickConnectModal({ open, onOpenChange }: QuickConnectModalProps
           <div className="text-sm text-gray-600">Available tutors online now:</div>
 
           <div className="space-y-3 max-h-60 overflow-y-auto">
-            {availableTutors.map((tutor) => (
+            {filteredTutors.map((tutor) => (
               <div key={tutor.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
                 <div className="flex items-center gap-3">
                   <div className="relative">
@@ -101,10 +122,14 @@ export function QuickConnectModal({ open, onOpenChange }: QuickConnectModalProps
                     <CircleDollarSign className="h-4 w-4" />
                     {tutor.cost}
                   </div>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                    <MessageCircle className="h-4 w-4 mr-1" />
-                    Connect
-                  </Button>
+                  <Button 
+                  size="sm" 
+                  className="bg-blue-600 hover:bg-blue-700"
+                  onClick={() => handleConnect(tutor)}
+                >
+                  <MessageCircle className="h-4 w-4 mr-1" />
+                  Connect
+                </Button>
                 </div>
               </div>
             ))}
