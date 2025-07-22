@@ -7,11 +7,12 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Search, MessageCircle, Calendar, Star, BookOpen, Zap, CircleDollarSign } from "lucide-react"
+import { Search, MessageCircle, Calendar, Star, BookOpen, Zap, CircleDollarSign, CheckCircle } from "lucide-react"
 import { QuickConnectModal } from "./components/quick-connect-modal"
 import { TopicModal } from "./components/topic-modal"
 import { BookingModal } from "./components/booking-modal"
 import { useSuperCoins } from "@/contexts/supercoin-context"
+import { useBookings } from "@/contexts/bookings-context"
 
 // Mock data for topics
 const mockTopics = [
@@ -118,6 +119,7 @@ export default function HomePage() {
   const [selectedTopic, setSelectedTopic] = useState<any>(null)
   const router = useRouter()
   const { balance } = useSuperCoins()
+  const { isTopicBooked, addBooking } = useBookings()
 
   const filteredTopics = mockTopics.filter((topic) => {
     const matchesSearch =
@@ -125,7 +127,8 @@ export default function HomePage() {
       topic.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       topic.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
     const matchesCategory = selectedCategory === "All" || topic.category === selectedCategory
-    return matchesSearch && matchesCategory
+    const isNotBooked = !isTopicBooked(topic.id) // Filter out booked topics
+    return matchesSearch && matchesCategory && isNotBooked
   })
 
   const handleChatClick = (tutor: typeof mockTopics[0]['tutor']) => {
@@ -144,10 +147,17 @@ export default function HomePage() {
   }
 
   const handleBookingSuccess = (bookingDetails: any) => {
-    // You can add additional logic here, such as:
-    // - Redirecting to a booking confirmation page
-    // - Updating the UI to show the booked session
-    // - Sending notifications
+    // Add the booking to the bookings context
+    addBooking({
+      topicId: bookingDetails.topicId,
+      topicTitle: bookingDetails.topicTitle || selectedTopic.title,
+      tutorName: bookingDetails.tutorName,
+      tutorAvatar: selectedTopic.tutor.avatar,
+      date: bookingDetails.date,
+      time: bookingDetails.time,
+      supercoinCost: bookingDetails.supercoinCost
+    })
+    
     console.log('Booking successful:', bookingDetails)
   }
 
@@ -315,6 +325,38 @@ export default function HomePage() {
               </Card>
             ))}
           </div>
+
+          {/* No Results Message */}
+          {filteredTopics.length === 0 && (
+            <div className="text-center py-12">
+              <div className="max-w-md mx-auto">
+                <CheckCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  {searchTerm || selectedCategory !== "All" 
+                    ? "No matching topics found" 
+                    : "All available topics have been booked!"
+                  }
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  {searchTerm || selectedCategory !== "All"
+                    ? "Try adjusting your search terms or category filter."
+                    : "Great job! You've booked all the available topics. Check your bookings page to manage your sessions."
+                  }
+                </p>
+                {(searchTerm || selectedCategory !== "All") && (
+                  <Button 
+                    variant="outline"
+                    onClick={() => {
+                      setSearchTerm("")
+                      setSelectedCategory("All")
+                    }}
+                  >
+                    Clear Filters
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

@@ -88,6 +88,9 @@ export function BookingModal({
       // Generate a mock booking ID
       const bookingId = "BK" + Date.now()
 
+      // Create notification for the booking
+      createBookingNotification(topic, selectedDate, selectedTime, supercoinCost)
+
       setBookingStep("success")
       toast.success("Booking confirmed! SuperCoins deducted successfully.")
       
@@ -95,6 +98,7 @@ export function BookingModal({
         onBookingSuccess({
           bookingId,
           topicId: topic.id,
+          topicTitle: topic.title, // Add topic title
           tutorName: topic.tutor.name,
           date: selectedDate,
           time: selectedTime,
@@ -107,6 +111,34 @@ export function BookingModal({
       console.error("Booking error:", error)
     } finally {
       setIsProcessing(false)
+    }
+  }
+
+  const createBookingNotification = (topic: any, date: string, time: string, cost: number) => {
+    try {
+      const savedNotifications = localStorage.getItem('notifications')
+      const notifications = savedNotifications ? JSON.parse(savedNotifications) : []
+      
+      const newNotification = {
+        id: Date.now().toString(),
+        type: "booking",
+        title: "Booking Confirmed",
+        message: `Your session "${topic.title}" with ${topic.tutor.name} has been confirmed for ${date} at ${time}. ${cost > 0 ? `${cost} SuperCoins deducted.` : 'Free session!'}`,
+        timestamp: new Date().toISOString(),
+        isRead: false,
+        avatar: topic.tutor.avatar
+      }
+      
+      notifications.unshift(newNotification)
+      localStorage.setItem('notifications', JSON.stringify(notifications))
+      
+      // Trigger storage event for other components to update
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'notifications',
+        newValue: JSON.stringify(notifications)
+      }))
+    } catch (error) {
+      console.error('Failed to create notification:', error)
     }
   }
 
