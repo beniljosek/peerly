@@ -126,7 +126,7 @@ export function TopicModal({ open, onOpenChange }: TopicModalProps) {
             <Label htmlFor="price">Price</Label>
             <Input
               id="price"
-              placeholder="e.g., Free, $15/hr, $50/session"
+              placeholder="e.g., Free, 15 SuperCoins, 50 SuperCoins"
               value={formData.price}
               onChange={(e) => setFormData((prev) => ({ ...prev, price: e.target.value }))}
               required

@@ -94,14 +94,14 @@ export default function ProfilePage() {
                   title: "Node.js API Development",
                   description: "Build RESTful APIs with Express.js and MongoDB.",
                   level: "Intermediate",
-                  price: "$20/hr",
+                  price: "20 SuperCoins",
                   students: 32,
                 },
                 {
                   title: "JavaScript Fundamentals",
                   description: "Learn the core concepts of JavaScript programming.",
                   level: "Beginner",
-                  price: "$15/hr",
+                  price: "15 SuperCoins",
                   students: 67,
                 },
               ].map((topic, index) => (

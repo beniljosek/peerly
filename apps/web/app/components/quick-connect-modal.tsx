@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Search, Zap, MessageCircle, Star } from "lucide-react"
+import { Search, Zap, MessageCircle, Star, CircleDollarSign } from "lucide-react"
 
 interface QuickConnectModalProps {
   open: boolean
@@ -21,6 +21,7 @@ const availableTutors = [
     status: "online",
     rating: 4.9,
     responseTime: "~2 min",
+    cost: 5,
   },
   {
     id: 2,
@@ -30,6 +31,7 @@ const availableTutors = [
     status: "online",
     rating: 4.8,
     responseTime: "~5 min",
+    cost: 5,
   },
   {
     id: 3,
@@ -39,6 +41,7 @@ const availableTutors = [
     status: "online",
     rating: 5.0,
     responseTime: "~1 min",
+    cost: 5,
   },
 ]
 
@@ -93,10 +96,16 @@ export function QuickConnectModal({ open, onOpenChange }: QuickConnectModalProps
                     </div>
                   </div>
                 </div>
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                  <MessageCircle className="h-4 w-4 mr-1" />
-                  Connect
-                </Button>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 text-sm font-medium text-violet-600">
+                    <CircleDollarSign className="h-4 w-4" />
+                    {tutor.cost}
+                  </div>
+                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                    <MessageCircle className="h-4 w-4 mr-1" />
+                    Connect
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

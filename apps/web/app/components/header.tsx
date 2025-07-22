@@ -11,13 +11,15 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
-import { Bell, MessageCircle, User, Settings, LogOut, Plus } from "lucide-react"
+import { Bell, MessageCircle, User, Settings, LogOut, Plus, BookOpen, CircleDollarSign, Award } from "lucide-react"
 
 interface HeaderProps {
   onCreateTopic: () => void
+  supercoinBalance?: number
+  verifiedTopics?: string[]
 }
 
-export function Header({ onCreateTopic }: HeaderProps) {
+export function Header({ onCreateTopic, supercoinBalance = 250, verifiedTopics = [] }: HeaderProps) {
   const pathname = usePathname()
 
   const isActive = (path: string) => {
@@ -35,18 +37,8 @@ export function Header({ onCreateTopic }: HeaderProps) {
             </Link>
           </div>
 
-          {/* Navigation */}
+          {/* Navigation - Desktop */}
           <nav className="hidden md:flex space-x-8">
-            <Link 
-              href="/browse" 
-              className={`font-medium transition-colors ${
-                isActive('/browse') 
-                  ? 'text-blue-600' 
-                  : 'text-gray-700 hover:text-blue-600'
-              }`}
-            >
-              Browse Topics
-            </Link>
             <Link 
               href="/learning" 
               className={`font-medium transition-colors ${
@@ -68,23 +60,40 @@ export function Header({ onCreateTopic }: HeaderProps) {
               My Teaching
             </Link>
             <Link 
-              href="/messages" 
+              href="/wallet" 
               className={`font-medium transition-colors ${
-                isActive('/messages') 
+                isActive('/wallet') 
                   ? 'text-blue-600' 
                   : 'text-gray-700 hover:text-blue-600'
               }`}
             >
-              Messages
+              Wallet
             </Link>
           </nav>
 
           {/* Right side */}
-          <div className="flex items-center space-x-4">
-            <Button onClick={onCreateTopic} className="bg-blue-600 hover:bg-blue-700">
-              <Plus className="h-4 w-4 mr-2" />
-              Teach Topic
-            </Button>
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            {/* SuperCoin Balance */}
+            <div className="hidden sm:flex items-center space-x-1 bg-gradient-to-r from-indigo-50 to-blue-50 px-3 py-1 rounded-full shadow-md">
+              <CircleDollarSign className="h-4 w-4 text-indigo-600" />
+              <span className="text-sm font-medium text-indigo-600">{supercoinBalance}</span>
+            </div>
+
+            {/* Badge Indicator */}
+            {verifiedTopics.length > 0 && (
+              <div className="hidden sm:flex items-center space-x-1 bg-green-50 px-2 py-1 rounded-full">
+                <Award className="h-4 w-4 text-green-600" />
+                <span className="text-xs text-green-600">{verifiedTopics.length}</span>
+              </div>
+            )}
+
+            {/* Quick Actions */}
+            <div className="flex items-center space-x-2">
+              <Button onClick={onCreateTopic} className="bg-blue-600 hover:bg-blue-700">
+                <Plus className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Teach Topic</span>
+              </Button>
+            </div>
 
             {/* Notifications */}
             <Button variant="ghost" size="sm">
@@ -115,6 +124,12 @@ export function Header({ onCreateTopic }: HeaderProps) {
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/wallet" className="flex items-center">
+                    <CircleDollarSign className="mr-2 h-4 w-4" />
+                    <span>Wallet</span>
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
@@ -126,6 +141,43 @@ export function Header({ onCreateTopic }: HeaderProps) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        <div className="md:hidden border-t border-gray-200 py-2">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/learning" 
+                className={`text-sm font-medium ${
+                  isActive('/learning') ? 'text-blue-600' : 'text-gray-700'
+                }`}
+              >
+                Learning
+              </Link>
+              <Link 
+                href="/teaching" 
+                className={`text-sm font-medium ${
+                  isActive('/teaching') ? 'text-blue-600' : 'text-gray-700'
+                }`}
+              >
+                Teaching
+              </Link>
+              <Link 
+                href="/wallet" 
+                className={`text-sm font-medium ${
+                  isActive('/wallet') ? 'text-blue-600' : 'text-gray-700'
+                }`}
+              >
+                Wallet
+              </Link>
+            </div>
+            {/* Mobile SuperCoin Display */}
+            <div className="flex items-center space-x-1 bg-gradient-to-r from-indigo-50 to-blue-50 px-2 py-1 rounded-full shadow-md">
+              <CircleDollarSign className="h-3 w-3 text-indigo-600" />
+              <span className="text-xs font-medium text-indigo-600">{supercoinBalance}</span>
+            </div>
           </div>
         </div>
       </div>
