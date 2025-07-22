@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Search, MessageCircle, Calendar, Star, BookOpen, Zap } from "lucide-react"
+import { Search, MessageCircle, Calendar, Star, BookOpen, Zap, CircleDollarSign } from "lucide-react"
 import { QuickConnectModal } from "./components/quick-connect-modal"
 import { TopicModal } from "./components/topic-modal"
 
@@ -39,7 +39,7 @@ const mockTopics = [
       rating: 4.8,
       sessions: 89,
     },
-    price: "$15/hr",
+    price: "15 SuperCoins",
     tags: ["Calculus", "Math", "Derivatives"],
   },
   {
@@ -54,7 +54,7 @@ const mockTopics = [
       rating: 5.0,
       sessions: 203,
     },
-    price: "$12/hr",
+    price: "12 SuperCoins",
     tags: ["Spanish", "Conversation", "Culture"],
   },
   {
@@ -69,7 +69,7 @@ const mockTopics = [
       rating: 4.7,
       sessions: 156,
     },
-    price: "$20/hr",
+    price: "20 SuperCoins",
     tags: ["Marketing", "SEO", "Social Media"],
   },
   {
@@ -84,7 +84,7 @@ const mockTopics = [
       rating: 4.9,
       sessions: 234,
     },
-    price: "$25/hr",
+    price: "25 SuperCoins",
     tags: ["Algorithms", "Data Structures", "Coding"],
   },
   {
@@ -99,7 +99,7 @@ const mockTopics = [
       rating: 4.8,
       sessions: 78,
     },
-    price: "$18/hr",
+    price: "18 SuperCoins",
     tags: ["Writing", "Creative", "Storytelling"],
   },
 ]
@@ -247,7 +247,16 @@ export default function HomePage() {
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-green-600">{topic.price}</span>
+                    <div className="flex items-center gap-1 font-semibold">
+                      {topic.price === "Free" ? (
+                        <span className="text-green-600">{topic.price}</span>
+                      ) : (
+                        <>
+                          <CircleDollarSign className="h-4 w-4 text-violet-600" />
+                          <span className="text-violet-600">{topic.price.replace(" SuperCoins", "")}</span>
+                        </>
+                      )}
+                    </div>
                     <div className="flex gap-2">
                       <Button size="sm" variant="outline">
                         <MessageCircle className="h-4 w-4 mr-1" />
