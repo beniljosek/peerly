@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { HeaderWrapper } from './components/header-wrapper'
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: 'Peerly - Learn from Peers, Teach your Passion',
@@ -18,6 +19,7 @@ export default function RootLayout({
       <body>
         <HeaderWrapper />
         {children}
+        <Toaster />
       </body>
     </html>
   )

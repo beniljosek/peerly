@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -111,6 +112,7 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [showQuickConnect, setShowQuickConnect] = useState(false)
   const [showTopicModal, setShowTopicModal] = useState(false)
+  const router = useRouter()
 
   const filteredTopics = mockTopics.filter((topic) => {
     const matchesSearch =
@@ -120,6 +122,16 @@ export default function HomePage() {
     const matchesCategory = selectedCategory === "All" || topic.category === selectedCategory
     return matchesSearch && matchesCategory
   })
+
+  const handleChatClick = (tutor: typeof mockTopics[0]['tutor']) => {
+    const params = new URLSearchParams({
+      tutorId: "1", // You might want to add tutor IDs to your mock data
+      tutorName: tutor.name,
+      topic: "General", // You might want to add topic to your tutor data
+    })
+    
+    router.push(`/messages?${params.toString()}`)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -258,7 +270,14 @@ export default function HomePage() {
                       )}
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleChatClick(topic.tutor)
+                        }}
+                      >
                         <MessageCircle className="h-4 w-4 mr-1" />
                         Chat
                       </Button>
