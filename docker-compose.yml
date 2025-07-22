@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: peerly-postgres
+    environment:
+      POSTGRES_DB: peerly_dev
+      POSTGRES_USER: peerly_user
+      POSTGRES_PASSWORD: peerly_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - peerly-network
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: peerly-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - peerly-network
+
+  # MongoDB (if needed for some features)
+  mongodb:
+    image: mongo:6
+    container_name: peerly-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: peerly_user
+      MONGO_INITDB_ROOT_PASSWORD: peerly_password
+      MONGO_INITDB_DATABASE: peerly_dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - peerly-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  mongodb_data:
+
+networks:
+  peerly-network:
+    driver: bridge 

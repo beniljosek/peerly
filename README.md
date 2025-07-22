@@ -12,8 +12,9 @@ A peer-to-peer learning platform that enables students to teach and learn throug
 
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
 - [Installation](#-installation)
-- [Usage](#-usage)
+- [Development](#-development)
 - [API Documentation](#-api-documentation)
 - [Contributing](#-contributing)
 - [License](#-license)
@@ -36,29 +37,82 @@ A peer-to-peer learning platform that enables students to teach and learn throug
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- **Framework**: [React/Next.js/Vue.js - specify]
-- **Styling**: [Tailwind CSS/Styled Components - specify]
-- **State Management**: [Redux/Zustand/Context - specify]
-- **Real-time**: [Socket.io/WebRTC - specify]
+### Frontend (React + Vite)
+- **Framework**: React 18 with TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
+- **Routing**: React Router DOM
+- **Real-time**: Socket.io Client
+- **HTTP Client**: Axios
+- **Form Handling**: React Hook Form + Zod
 
-### Backend
-- **Runtime**: [Node.js/Python/Go - specify]
-- **Framework**: [Express/FastAPI/Gin - specify]
-- **Database**: [PostgreSQL/MongoDB - specify]
-- **Authentication**: [JWT/OAuth - specify]
+### Backend (Java + Spring Boot)
+- **Runtime**: Java 17
+- **Framework**: Spring Boot 3.2
+- **Database**: PostgreSQL
+- **Caching**: Redis
+- **Authentication**: JWT
+- **API Documentation**: OpenAPI/Swagger
+- **Real-time**: WebSocket
 
 ### Infrastructure
-- **Hosting**: [Vercel/AWS/Heroku - specify]
-- **Database**: [Supabase/MongoDB Atlas - specify]
-- **Real-time**: [Socket.io/Pusher - specify]
+- **Monorepo**: Turbo
+- **Package Manager**: npm workspaces
+- **Containerization**: Docker & Docker Compose
+- **Database**: PostgreSQL, Redis, MongoDB (optional)
+
+## 🏗️ Project Structure
+
+```
+peerly/
+├── apps/
+│   ├── web/                 # React frontend
+│   │   ├── src/
+│   │   │   ├── components/  # Reusable components
+│   │   │   ├── pages/       # Page components
+│   │   │   ├── hooks/       # Custom hooks
+│   │   │   ├── services/    # API services
+│   │   │   └── utils/       # Utility functions
+│   │   ├── package.json
+│   │   ├── vite.config.ts
+│   │   └── tsconfig.json
+│   └── api/                 # Java Spring Boot backend
+│       ├── src/
+│       │   ├── main/
+│       │   │   ├── java/com/peerly/
+│       │   │   │   ├── controller/    # REST controllers
+│       │   │   │   ├── service/       # Business logic
+│       │   │   │   ├── repository/    # Data access
+│       │   │   │   ├── model/         # Entity models
+│       │   │   │   ├── config/        # Configuration
+│       │   │   │   └── security/      # Security config
+│       │   │   └── resources/
+│       │   └── test/
+│       └── pom.xml
+├── packages/
+│   ├── shared/              # Shared types and utilities
+│   │   ├── src/
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   └── ui/                  # UI component library
+│       ├── src/
+│       ├── package.json
+│       └── tsconfig.json
+├── package.json             # Root package.json
+├── turbo.json              # Turbo configuration
+├── docker-compose.yml      # Docker services
+└── README.md
+```
 
 ## 🚀 Installation
 
 ### Prerequisites
 - Node.js (v18 or higher)
-- npm or yarn
-- [Any other requirements]
+- Java 17 or higher
+- Maven 3.6 or higher
+- Docker and Docker Compose
+- PostgreSQL (or use Docker)
 
 ### Quick Start
 
@@ -70,92 +124,89 @@ A peer-to-peer learning platform that enables students to teach and learn throug
 
 2. **Install dependencies**
    ```bash
+   # Install root dependencies
    npm install
-   # or
-   yarn install
+   
+   # Install workspace dependencies
+   npm run install:all
    ```
 
-3. **Set up environment variables**
+3. **Start infrastructure services**
    ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your configuration
+   # Start PostgreSQL, Redis, and MongoDB
+   npm run docker:up
    ```
 
-4. **Run the development server**
+4. **Set up environment variables**
    ```bash
+   # Copy environment files
+   cp apps/web/.env.example apps/web/.env.local
+   cp apps/api/.env.example apps/api/.env.local
+   ```
+
+5. **Start development servers**
+   ```bash
+   # Start both frontend and backend
    npm run dev
-   # or
-   yarn dev
    ```
 
-5. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+6. **Open your browser**
+   - Frontend: [http://localhost:3000](http://localhost:3000)
+   - Backend API: [http://localhost:8080/api](http://localhost:8080/api)
+   - API Docs: [http://localhost:8080/api/swagger-ui.html](http://localhost:8080/api/swagger-ui.html)
 
-### Environment Variables
+## 💻 Development
 
-Create a `.env.local` file in the root directory:
+### Available Scripts
 
-```env
-# Database
-DATABASE_URL=your_database_url
+```bash
+# Development
+npm run dev              # Start all services in development mode
+npm run dev:web          # Start only frontend
+npm run dev:api          # Start only backend
 
-# Authentication
-NEXTAUTH_SECRET=your_secret_key
-NEXTAUTH_URL=http://localhost:3000
+# Building
+npm run build            # Build all packages
+npm run build:web        # Build frontend only
+npm run build:api        # Build backend only
 
-# Real-time
-SOCKET_URL=your_socket_url
+# Testing
+npm run test             # Run all tests
+npm run test:web         # Run frontend tests
+npm run test:api         # Run backend tests
 
-# AI Services
-OPENAI_API_KEY=your_openai_key
+# Linting
+npm run lint             # Lint all packages
+npm run lint:web         # Lint frontend only
+npm run lint:api         # Lint backend only
+
+# Type checking
+npm run type-check       # Type check all TypeScript packages
+
+# Docker
+npm run docker:up        # Start Docker services
+npm run docker:down      # Stop Docker services
+npm run docker:build     # Build Docker images
 ```
 
-## 📖 Usage
+### Frontend Development
 
-### For Students
+The frontend is built with React, Vite, and TypeScript. Key features:
 
-1. **Start Learning**
-   - Click "Learn Now" on the dashboard
-   - Select your topic of interest
-   - Browse available mentors
-   - Book a 15-30 minute session
+- **Hot Module Replacement**: Instant updates during development
+- **TypeScript**: Full type safety
+- **Tailwind CSS**: Utility-first styling
+- **Component Library**: Reusable UI components in `packages/ui`
 
-2. **Earn LearnCoins**
-   - Complete learning sessions
-   - Refer friends to the platform
-   - Participate in community activities
+### Backend Development
 
-### For Mentors
+The backend is built with Spring Boot and Java 17. Key features:
 
-1. **Become a Mentor**
-   - Navigate to "Become a Mentor"
-   - Select your expertise area
-   - Complete the AI skill verification quiz
-   - Record a 30-second introduction video
-
-2. **Start Teaching**
-   - Toggle your availability status
-   - Accept session requests
-   - Conduct real-time learning sessions
-   - Earn LearnCoins for your time
-
-### API Examples
-
-```javascript
-// Start a learning session
-const session = await fetch('/api/sessions', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    topic: 'JavaScript',
-    duration: 30,
-    mentorId: 'mentor_123'
-  })
-});
-
-// Get available mentors
-const mentors = await fetch('/api/mentors?topic=JavaScript&available=true');
-```
+- **RESTful APIs**: Clean, RESTful endpoints
+- **JPA/Hibernate**: Database ORM
+- **JWT Authentication**: Secure token-based auth
+- **WebSocket Support**: Real-time communication
+- **OpenAPI**: Auto-generated API documentation
 
 ## 📚 API Documentation
 
@@ -164,49 +215,39 @@ All API endpoints require authentication via JWT tokens.
 
 ### Endpoints
 
+#### Users
+- `GET /api/users/profile` - Get user profile
+- `POST /api/users/register` - Register new user
+- `POST /api/users/login` - User login
+
 #### Sessions
-- `POST /api/sessions` - Create a new learning session
-- `GET /api/sessions` - Get user's session history
-- `PUT /api/sessions/:id` - Update session status
+- `GET /api/sessions` - Get user's sessions
+- `POST /api/sessions` - Create new session
+- `GET /api/sessions/{id}` - Get specific session
+- `PUT /api/sessions/{id}` - Update session
 
 #### Mentors
 - `GET /api/mentors` - Get available mentors
-- `POST /api/mentors/verify` - Submit skill verification
-- `GET /api/mentors/:id` - Get mentor profile
+- `GET /api/mentors/{id}` - Get mentor profile
+- `POST /api/mentors/verify` - Verify mentor skills
+- `PUT /api/mentors/{id}/availability` - Update availability
 
-#### Wallet
-- `GET /api/wallet` - Get LearnCoin balance
-- `GET /api/wallet/transactions` - Get transaction history
-
-[Full API documentation available here](docs/api.md)
-
-## 🏗️ Project Structure
-
-```
-peerly/
-├── src/
-│   ├── components/     # React components
-│   ├── pages/         # Next.js pages
-│   ├── api/           # API routes
-│   ├── lib/           # Utility functions
-│   ├── styles/        # CSS/styling files
-│   └── types/         # TypeScript definitions
-├── public/            # Static assets
-├── docs/              # Documentation
-├── tests/             # Test files
-└── package.json
-```
+### API Documentation
+Visit [http://localhost:8080/api/swagger-ui.html](http://localhost:8080/api/swagger-ui.html) for interactive API documentation.
 
 ## 🧪 Testing
 
 ```bash
-# Run unit tests
-npm run test
+# Frontend tests
+npm run test:web
 
-# Run integration tests
+# Backend tests
+npm run test:api
+
+# Integration tests
 npm run test:integration
 
-# Run e2e tests
+# E2E tests
 npm run test:e2e
 ```
 
@@ -214,15 +255,19 @@ npm run test:e2e
 
 ### Production Build
 ```bash
+# Build all packages
 npm run build
-npm start
+
+# Start production servers
+npm run start
 ```
 
-### Environment Setup
-1. Set up your production database
-2. Configure environment variables
-3. Set up SSL certificates
-4. Configure your domain
+### Docker Deployment
+```bash
+# Build and run with Docker
+npm run docker:build
+npm run docker:up
+```
 
 ## 🤝 Contributing
 
