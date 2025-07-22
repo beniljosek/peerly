@@ -60,6 +60,16 @@ export function Header({ onCreateTopic, supercoinBalance = 250, verifiedTopics =
               My Teaching
             </Link>
             <Link 
+              href="/bookings" 
+              className={`font-medium transition-colors ${
+                isActive('/bookings') 
+                  ? 'text-blue-600' 
+                  : 'text-gray-700 hover:text-blue-600'
+              }`}
+            >
+              Bookings
+            </Link>
+            <Link 
               href="/wallet" 
               className={`font-medium transition-colors ${
                 isActive('/wallet') 
@@ -163,6 +173,14 @@ export function Header({ onCreateTopic, supercoinBalance = 250, verifiedTopics =
                 }`}
               >
                 Teaching
+              </Link>
+              <Link 
+                href="/bookings" 
+                className={`text-sm font-medium ${
+                  isActive('/bookings') ? 'text-blue-600' : 'text-gray-700'
+                }`}
+              >
+                Bookings
               </Link>
               <Link 
                 href="/wallet" 
